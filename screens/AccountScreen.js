@@ -49,8 +49,8 @@ export default function AccountScreen({ navigation }) {
 
   function signOut() {
     AsyncStorage.removeItem("token");
-    AsyncStorage.getItem("token")
-    .then(result => console.log(`Token: ${result}`))
+ //   AsyncStorage.getItem("token")
+ //   .then(result => console.log(`Token: ${result}`))
     navigation.replace("SignIn");
     console.log("Sign Out")
     
