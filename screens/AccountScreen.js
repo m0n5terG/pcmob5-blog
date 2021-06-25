@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ActivityIndicator, Button, StyleSheet, Text, View } from "react-native";
-import { commonStyles } from "../styles/commonStyles";
+import { ActivityIndicator, StyleSheet, Text, View, Image, Button } from "react-native";
+import { IconButton, Colors } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
@@ -9,8 +9,10 @@ const API_WHOAMI = "/whoami";
 
 export default function AccountScreen({ navigation }) {
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false)
 
   async function getUsername() {
+    setLoading(true);
     console.log("---- Getting user name ----");
     const token = await AsyncStorage.getItem("token");
     console.log(`Token is ${token}`);
@@ -22,6 +24,7 @@ export default function AccountScreen({ navigation }) {
       setUsername(response.data.username);
     } catch (error) {
       console.log("Error getting user name");
+      setLoading(false)
       if (error.response) {
         console.log(error.response.data);
         if (error.response.data.status_code === 401) {
@@ -39,7 +42,7 @@ export default function AccountScreen({ navigation }) {
     // Check for when we come back to this screen
     const removeListener = navigation.addListener("focus", () => {
       console.log("Running nav listener");
-      setUsername(<ActivityIndicator />);
+      setUsername;(<ActivityIndicator />);
       getUsername();
     });
     getUsername();
@@ -57,12 +60,74 @@ export default function AccountScreen({ navigation }) {
   }
 
   return (
-    <View style={commonStyles.container}>
-      <Text>Account Screen</Text>
-      <Text>{username}</Text>
-      <Button title="Sign out" onPress={signOut} />
+    <View style={styles.container}>
+      <Text style={styles.header}>Account Screen</Text>
+      <View style={{ alignSelf: "center" }}>
+        <View style={styles.profileImage}>
+        <Image
+        source={require('../assets/tempAvatar.jpg')}
+        style={styles.image}
+        resizeMode='center'
+        />
+        </View>
+        <View style={styles.camera}>
+          <IconButton
+            icon="camera"
+            color={Colors.red500}
+            size={30}
+            style={styles.camera}
+            onPress={() => console.log('Pressed')}
+          />
+        </View>
+      </View>
+       
+      <Text style={styles.name}>{username}</Text>
+      <Button
+        title="Sign Out"
+        onPress={signOut}
+      />
+      
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  header: {
+    fontSize: 30,
+    alignSelf: "center",
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  profileImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    overflow: "hidden"
+  },
+  image: {
+    flex: 1,
+    borderRadius: 100,
+    height: undefined,
+    width: undefined
+  },
+  name: {
+    fontSize: 20,
+    alignSelf: "center",
+    marginBottom: 20,
+    marginTop: 20
+  },
+  camera: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    padding: 4,
+    height: 80,
+    width: 80,
+    alignItems: "center",
+    justifyContent: "center"
+  }
+  });
