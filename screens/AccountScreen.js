@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ActivityIndicator, StyleSheet, Text, View, Image, Button } from "react-native";
 import { IconButton, Colors } from "react-native-paper";
+import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
@@ -10,12 +11,13 @@ const API_WHOAMI = "/whoami";
 export default function AccountScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false)
+  const [image, setImage] = useState(null);
 
   async function getUsername() {
-    setLoading(true);
     console.log("---- Getting user name ----");
     const token = await AsyncStorage.getItem("token");
     console.log(`Token is ${token}`);
+    setLoading(true);
     try {
       const response = await axios.get(API + API_WHOAMI, {
         headers: { Authorization: `JWT ${token}` },
@@ -36,13 +38,38 @@ export default function AccountScreen({ navigation }) {
       // We should probably go back to login screen?
     }
   }
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [3, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
 
   useEffect(() => {
     console.log("Setting up nav listener");
     // Check for when we come back to this screen
     const removeListener = navigation.addListener("focus", () => {
       console.log("Running nav listener");
-      setUsername;(<ActivityIndicator />);
+      setUsername;
       getUsername();
     });
     getUsername();
@@ -55,7 +82,7 @@ export default function AccountScreen({ navigation }) {
  //   AsyncStorage.getItem("token")
  //   .then(result => console.log(`Token: ${result}`))
     navigation.replace("SignIn");
-    console.log("Sign Out")
+    console.log("Signing Out")
     
   }
 
@@ -65,7 +92,7 @@ export default function AccountScreen({ navigation }) {
       <View style={{ alignSelf: "center" }}>
         <View style={styles.profileImage}>
         <Image
-        source={require('../assets/tempAvatar.jpg')}
+        source={{ uri: image }}
         style={styles.image}
         resizeMode='center'
         />
@@ -76,12 +103,11 @@ export default function AccountScreen({ navigation }) {
             color={Colors.red500}
             size={30}
             style={styles.camera}
-            onPress={() => console.log('Pressed')}
+            onPress={pickImage}
           />
         </View>
       </View>
-       
-      <Text style={styles.name}>{username}</Text>
+        <Text style={styles.name}>{username}</Text>
       <Button
         title="Sign Out"
         onPress={signOut}
@@ -97,9 +123,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   header: {
-    fontSize: 30,
+    fontSize: 40,
     alignSelf: "center",
-    marginTop: 30,
     marginBottom: 20,
   },
   profileImage: {
@@ -115,9 +140,9 @@ const styles = StyleSheet.create({
     width: undefined
   },
   name: {
-    fontSize: 20,
+    fontSize: 30,
     alignSelf: "center",
-    marginBottom: 20,
+    marginBottom: 40,
     marginTop: 20
   },
   camera: {
