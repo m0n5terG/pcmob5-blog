@@ -10,22 +10,29 @@ const API_WHOAMI = "/whoami";
 
 export default function AccountScreen({ navigation }) {
   const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(false)
-  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [dateJoin, setDateJoin] = useState("")
 
-  async function getUsername() {
-    console.log("---- Getting user name ----");
+  async function getUserProfile() {
+    setLoading(true);
+    console.log("---- Getting user profile ----");
     const token = await AsyncStorage.getItem("token");
     console.log(`Token is ${token}`);
-    setLoading(true);
+    
     try {
       const response = await axios.get(API + API_WHOAMI, {
         headers: { Authorization: `JWT ${token}` },
       });
       console.log("Got user name!");
       setUsername(response.data.username);
+      setProfileImage(response.data.profileImage);
+      setDateJoin(dateJoin.String);
+
+      setLoading(false);
+
     } catch (error) {
-      console.log("Error getting user name");
+      console.log("Error getting user profile");
       setLoading(false)
       if (error.response) {
         console.log(error.response.data);
@@ -38,6 +45,20 @@ export default function AccountScreen({ navigation }) {
       // We should probably go back to login screen?
     }
   }
+  
+  useEffect(() => {
+    console.log("Setting up nav listener");
+    // Check for when we come back to this screen
+    const removeListener = navigation.addListener("focus", () => {
+      console.log("Running nav listener");
+      setUsername;
+      getUserProfile();
+    });
+    getUserProfile();
+
+    return removeListener;
+  }, []);
+
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -60,22 +81,9 @@ export default function AccountScreen({ navigation }) {
     console.log(result);
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setProfileImage(result.uri);
     }
   };
-
-  useEffect(() => {
-    console.log("Setting up nav listener");
-    // Check for when we come back to this screen
-    const removeListener = navigation.addListener("focus", () => {
-      console.log("Running nav listener");
-      setUsername;
-      getUsername();
-    });
-    getUsername();
-
-    return removeListener;
-  }, []);
 
   function signOut() {
     AsyncStorage.removeItem("token");
@@ -92,7 +100,8 @@ export default function AccountScreen({ navigation }) {
       <View style={{ alignSelf: "center" }}>
         <View style={styles.profileImage}>
         <Image
-        source={{ uri: image }}
+        source={profileImage ? { uri: profileImage }
+        : require("../assets/tempAvatar.jpg")}
         style={styles.image}
         resizeMode='center'
         />
@@ -108,6 +117,7 @@ export default function AccountScreen({ navigation }) {
         </View>
       </View>
         <Text style={styles.name}>{username}</Text>
+        <Text>{dateJoin}</Text>
       <Button
         title="Sign Out"
         onPress={signOut}
