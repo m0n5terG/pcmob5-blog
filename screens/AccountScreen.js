@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, View, Image, Button } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet, Text, View, Image, Button } from "react-native";
 import { IconButton, Colors } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -101,7 +101,7 @@ export default function AccountScreen({ navigation }) {
           <IconButton
             icon="camera"
             color={Colors.red500}
-            size={30}
+            size={40}
             style={styles.camera}
             onPress={pickImage}
           />
@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     padding: 4,
-    height: 80,
-    width: 80,
+    height: 50,
+    width: 50,
     alignItems: "center",
     justifyContent: "center"
   }
