@@ -12,7 +12,6 @@ export default function AccountScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const [dateJoin, setDateJoin] = useState("")
 
   async function getUserProfile() {
     setLoading(true);
@@ -27,7 +26,6 @@ export default function AccountScreen({ navigation }) {
       console.log("Got user name!");
       setUsername(response.data.username);
       setProfileImage(response.data.profileImage);
-      setDateJoin(dateJoin.String);
 
       setLoading(false);
 
@@ -97,15 +95,15 @@ export default function AccountScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Account Screen</Text>
-      <View style={{ alignSelf: "center" }}>
-        <View style={styles.profileImage}>
-        <Image
-        source={profileImage ? { uri: profileImage }
-        : require("../assets/tempAvatar.jpg")}
-        style={styles.image}
-        resizeMode='center'
-        />
-        </View>
+        <View style={{ alignSelf: "center" }}>
+          <View style={styles.profileImage}>
+            <Image
+              source={profileImage ? { uri: profileImage }
+              : require("../assets/tempAvatar.jpg")}
+              style={styles.image}
+              resizeMode='center'
+            />
+          </View>
         <View style={styles.camera}>
           <IconButton
             icon="camera"
@@ -117,7 +115,6 @@ export default function AccountScreen({ navigation }) {
         </View>
       </View>
         <Text style={styles.name}>{username}</Text>
-        <Text>{dateJoin}</Text>
       <Button
         title="Sign Out"
         onPress={signOut}

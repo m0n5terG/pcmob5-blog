@@ -74,7 +74,7 @@ export default function SignInScreen({ navigation }) {
           <Text style={styles.buttonText}>Log In</Text>
         </TouchableOpacity>
         {loading ? (
-          <ActivityIndicator style={{ marginLeft: 20, marginBottom: 20}} />
+          <ActivityIndicator size="large" color="#0000ff" />
         ) : null}
         </View>
         <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
