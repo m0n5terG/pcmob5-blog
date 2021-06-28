@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import SignInScreen from "./screens/SignInScreen";
 import TabStack from "./components/TabStack";
 import SignUpScreen from "./screens/SignUpScreen";
@@ -43,7 +43,7 @@ export default function App() {
       <Stack.Navigator 
         mode="modal" 
         headerMode="none"
-        screenOptions={{ animationEnabled: false }}
+        initialRouteName="SignIn"
         >
         <Stack.Screen component={SignInScreen} name="SignIn" />
         <Stack.Screen component={SignUpScreen} name="SignUp" />
