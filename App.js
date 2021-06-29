@@ -28,16 +28,20 @@ export default function App() {
     loadToken();
   }, []);
 
-  return  loading ? (
-    <View style={styles.container}>
-      <ActivityIndicator />
-    </View>
-  ) : (
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  return (
     <NavigationContainer>
       <Stack.Navigator 
         mode="modal" 
         headerMode="none"
-        initialRouteName={signedIn ? "Blog" : "SignIn"}
+        initialRouteName={"SignIn"}
         >
         <Stack.Screen component={TabStack} name="Blog"/>
         <Stack.Screen component={SignInScreen} name="SignIn" />
