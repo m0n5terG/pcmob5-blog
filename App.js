@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import AuthStack from "./components/AuthStack";
+import TabStack from "./components/AuthStack";
 import SignInScreen from "./screens/SignInScreen";
 import AccountScreen from "./screens/AccountScreen";
 import SignUpScreen from "./screens/SignUpScreen";
@@ -34,13 +34,18 @@ export default function App() {
     </View>
   ) : (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          
-          >
-      </Stack.Screen> 
+      
+      <Stack.Navigator 
+        mode="modal" 
+        headerMode="none"
+        initialRouteName="SignIn"
+        >
+        <Stack.Screen component={TabStack} name="Blog"/>
+        <Stack.Screen component={SignInScreen} name="SignIn" />
+        <Stack.Screen component={SignUpScreen} name="SignUp" />
         
       </Stack.Navigator>
+      
     </NavigationContainer>
   );
 }

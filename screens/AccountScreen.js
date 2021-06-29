@@ -113,7 +113,7 @@ export default function AccountScreen({ navigation }) {
           />
         </View>
       </View>
-        <Text style={styles.name}>{username}</Text>
+        {loading ? <ActivityIndicator /> : <Text style={styles.name}>{username}</Text>}
       <Button
         title="Sign Out"
         onPress={signOut}
