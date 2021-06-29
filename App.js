@@ -34,7 +34,6 @@ export default function App() {
     </View>
   ) : (
     <NavigationContainer>
-      
       <Stack.Navigator 
         mode="modal" 
         headerMode="none"
@@ -42,8 +41,7 @@ export default function App() {
         >
         <Stack.Screen component={TabStack} name="Blog"/>
         <Stack.Screen component={SignInScreen} name="SignIn" />
-        <Stack.Screen component={SignUpScreen} name="SignUp" />
-        
+        <Stack.Screen component={SignUpScreen} name="SignUp" />      
       </Stack.Navigator> 
     </NavigationContainer>
   );
