@@ -4,6 +4,7 @@ import { IconButton, Colors } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import SignInScreen from "./SignInScreen";
 
 const API = "http://m0n5terg.pythonanywhere.com";
 const API_WHOAMI = "/whoami";
@@ -54,10 +55,6 @@ export default function AccountScreen({ navigation }) {
     });
     getUserProfile();
 
-    return removeListener;
-  }, []);
-
-  useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -66,14 +63,16 @@ export default function AccountScreen({ navigation }) {
         }
       }
     })();
+
+    return removeListener;
   }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [3, 3],
-      quality: 1,
+      aspect: [1, 1],
+      quality: 0.5,
     });
 
     console.log(result);
@@ -85,8 +84,8 @@ export default function AccountScreen({ navigation }) {
 
   function signOut() {
     AsyncStorage.removeItem("token");
- //   AsyncStorage.getItem("token")
- //   .then(result => console.log(`Token: ${result}`))
+    AsyncStorage.getItem("token")
+    .then(result => console.log(`Token: ${result}`))
     navigation.navigate("SignIn");
     console.log("Signing Out")
     
@@ -135,14 +134,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   profileImage: {
-    width: 200,
-    height: 200,
+    width: 170,
+    height: 170,
     borderRadius: 100,
+    
     overflow: "hidden"
   },
   image: {
     flex: 1,
-    borderRadius: 100,
     height: undefined,
     width: undefined
   },
@@ -156,9 +155,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
-    padding: 4,
+    padding: 0,
     height: 50,
-    width: 50,
+    width: 40,
     alignItems: "center",
     justifyContent: "center"
   }
