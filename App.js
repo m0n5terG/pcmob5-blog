@@ -42,7 +42,7 @@ export default function App() {
         mode="modal" 
         headerMode="none"
         initialRouteName="SignIn"
-        >
+        >y
         <Stack.Screen component={TabStack} name="Blog"/>
         <Stack.Screen component={SignInScreen} name="SignIn" />
         <Stack.Screen component={SignUpScreen} name="SignUp" />
