@@ -2,6 +2,9 @@ import React from "react";
 import Icon from "react-native-vector-icons";
 import AccountScreen from "../screens/AccountScreen";
 import IndexScreen from "../screens/IndexScreen";
+import CreateScreen from "../screens/CreateScreen";
+import EditScreen from "../screens/EditScreen";
+import ShowScreen from "../screens/ShowScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -15,6 +18,21 @@ function BlogStack() {
         name="Index"
         component={IndexScreen}
         options={{ headerLeft: null }}
+      />
+      <Stack.Screen
+        name="Post"
+        component={CreateScreen}
+        options={null} 
+      />
+      <Stack.Screen
+        name="Edit"
+        component={EditScreen}
+        options={null} 
+      />
+      <Stack.Screen
+        name="Show"
+        component={ShowScreen}
+        options={null} 
       />
     </Stack.Navigator>
   );
