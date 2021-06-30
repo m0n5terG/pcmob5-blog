@@ -6,6 +6,8 @@ import SignUpScreen from '../screens/SignUpScreen';
 const Stack = createStackNavigator();
 
 export default function AuthStack() {
+  const [signedIn, setSignedIn] = (false);
+  
     <Stack.Navigator>
         <Stack.Screen 
           mode="modal" 
