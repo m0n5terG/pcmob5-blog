@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ export default function SignInScreen({ navigation }) {
   const [errorText, setErrorText] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function login () {
+  async function login() {
     console.log("---- Login time ----");
     Keyboard.dismiss();
 
