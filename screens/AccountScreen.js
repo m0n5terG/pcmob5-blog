@@ -26,7 +26,6 @@ export default function AccountScreen({ navigation }) {
       });
       console.log("Got user name!");
       setUsername(response.data.username);
-      setProfileImage(response.data.profileImage);
 
       setLoading(false);
 
@@ -55,6 +54,12 @@ export default function AccountScreen({ navigation }) {
     });
     getUserProfile();
 
+    return removeListener;
+  }, []);
+
+
+  //Need to work on edit profile pic
+/*
     (async () => {
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -63,9 +68,6 @@ export default function AccountScreen({ navigation }) {
         }
       }
     })();
-
-    return removeListener;
-  }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -82,6 +84,10 @@ export default function AccountScreen({ navigation }) {
     }
   };
 
+  function updateProfile() {
+    
+  }
+*/
   function signOut() {
     AsyncStorage.removeItem("token");
     AsyncStorage.getItem("token")
@@ -109,7 +115,7 @@ export default function AccountScreen({ navigation }) {
             color={Colors.red500}
             size={40}
             style={styles.camera}
-            onPress={pickImage}
+            onPress={null}
           />
         </View>
       </View>
