@@ -6,22 +6,11 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-const API_WHOAMI = "https://weihong1988.pythonanywhere.com/whoami";
-const API_CREATEPOST = "https://weihong1988.pythonanywhere.com/create";
+const API = "http://m0n5terg.pythonanywhere.com";
+const API_CREATE = "/create";
 
 export default function CreateScreen({ navigation }) {
-  const [Title, setTitle] = useState("");
-  const [TitleError, setTitleError] = React.useState(false);
-
-  const [imageData, setImageData] = useState(null);
-  const [imageDataError, setImageDataError] = React.useState(false);
-
-  const [Description, setDescription] = useState("");
-
-  const [errorText, setErrorText] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-
-
+  
   async function submitPost() {
     var ErrorFound = false;
     Keyboard.dismiss();
@@ -48,7 +37,7 @@ export default function CreateScreen({ navigation }) {
 
         const token = await AsyncStorage.getItem("token");
 
-        const response = await axios.post(API_CREATEPOST, 
+        const response = await axios.post(API_CREATE, 
           {
             Title,
             imageData,
@@ -78,57 +67,33 @@ export default function CreateScreen({ navigation }) {
     }
   }
 
-
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
-        await ImagePicker.requestCameraPermissionsAsync();
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
       }
     })();
   }, []);
 
-  const LaunchCamera = async () => {
-    var cameraResponse = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
+      aspect: [4, 3],
+      quality: 1,
     });
 
-    if (cameraResponse.cancelled) {
-      return;
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
     }
-
-    const FormattedImage = await ImageManipulator.manipulateAsync(
-      cameraResponse.localUri || cameraResponse.uri,
-      [{resize: { width: 300, height: 300, }}],
-      {compress: 0.5, base64: true}
-    );
-
-    setImageData(FormattedImage.base64);
   };
 
-  const LaunchGallery = async () => {
-    var galleryResponse = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
-
-    if (galleryResponse.cancelled) {
-      return;
-    }
-
-    const FormattedImage = await ImageManipulator.manipulateAsync(
-      galleryResponse.localUri || galleryResponse.uri,
-      [{resize: { width: 300, height: 300, }}],
-      {compress: 0.5, base64: true}
-    );
-
-    setImageData(FormattedImage.base64);
-  };
   return (
     <ScrollView style={{paddingHorizontal: 10}}>
 
@@ -168,4 +133,4 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16
   },
-});  
+})
