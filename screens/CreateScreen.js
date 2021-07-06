@@ -1,47 +1,33 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Platform } from "react-native";
-import InputForm from "../components/InputForm";
-import * as ImagePicker from 'expo-image-picker';
-import * as ImageManipulator from 'expo-image-manipulator';
+import React, { useState, useRef } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Keyboard } from "react-native";
+import { AutoGrowTextInput } from 'react-native-auto-grow-textinput';
+import ImageInput from '../components/ImageInput';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 const API = "http://m0n5terg.pythonanywhere.com";
 const API_CREATE = "/create";
 
+
 export default function CreateScreen({ navigation }) {
+  const [image, setImage] = useState([]);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const scrollView = useRef();
+
   
-  async function submitPost() {
-    var ErrorFound = false;
+  async function createPost() {
+    console.log("--- Create Post ---");
     Keyboard.dismiss();
-
-    if (Title == "") {
-      setTitleError(true);
-      setErrorText("Title cannot be blank");
-      ErrorFound = true;
-    }
-    else
-      setTitleError(false);
-
-    if (imageData == null) {
-      setImageDataError(true);
-      setErrorText("Picture cannot be blank");
-      ErrorFound = true;
-    }
-    else
-      setImageDataError(false);
-
-    if (!ErrorFound) {
       try {
         setIsLoading(true);
+  //      const token = await AsyncStorage.getItem("token");
 
-        const token = await AsyncStorage.getItem("token");
-
-        const response = await axios.post(API_CREATE, 
+        const response = await axios.post(API + API_CREATE, 
           {
-            Title,
-            imageData,
-            Description
+            title,
+            image,
+            content
           },
           {
           headers: { Authorization: `JWT ${token}` },
@@ -64,58 +50,77 @@ export default function CreateScreen({ navigation }) {
         else
           console.log(error);
       }
-    }
   }
 
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
-        }
-      }
-    })();
-  }, []);
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
+  const handleAdd = (uri) => {
+    setImage([...image, uri]);
   };
 
-  return (
-    <ScrollView style={{paddingHorizontal: 10}}>
+  const handleRemove = (uri) => {
+    setImage(image.filter((image) => image !== uri));
+  };
 
+
+  return (
+    <View style={styles.container}>
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        ref={scrollView}
+        horizontal
+        onContentSizeChange={() => scrollView.current.scrollToEnd()}>
+        <View style={styles.imageContainer}>
+          {image.map((uri) => (
+            <View key={uri} style={styles.image}>
+              <ImageInput
+                image={uri}
+              />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    <ScrollView style={{paddingHorizontal: 10}}>
+      
       <Text style={styles.text}>Title</Text>
-      <InputForm 
-        onChangeText={(input) => setTitle(input)}/>
-      <Text style={styles.text}>Description</Text>
-      <InputForm
-        onChangeText={(input) => setDescription(input)} />
+      <AutoGrowTextInput
+            value={title}
+            onChangeText={(input) => setTitle(input)}
+            style={styles.textInput}
+            placeholder={'Title'}
+            placeholderTextColor='#66737C'
+          />
+      <Text style={styles.text}>Content</Text>
+      <AutoGrowTextInput
+            value={content}
+            onChangeText={(input) => setContent(input)}
+            style={styles.textInput}
+            placeholder={'Content'}
+            placeholderTextColor='#66737C'
+            maxHeight={200}
+            minHeight={45}
+            enableScrollToCaret
+          />
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <TouchableOpacity
           style={styles.loginBtn}
           activeOpacity={0.8}
-          onPress={() => setModalVisible(true)}>
+          onPress={() => createPost()}>
           <Text style={{color: 'white'}}>Post</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    
+  },
+  ImageContainer: {
+    flexDirection: 'row',
+  },
   loginBtn: {
     width: '50%',
     backgroundColor: '#0482f7',
@@ -130,7 +135,10 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   text: {
-    padding: 10,
-    fontSize: 16
+    fontSize: 16,
+    textAlign: 'center'
   },
-})
+  image: {
+    marginRight: 10,
+  },
+});

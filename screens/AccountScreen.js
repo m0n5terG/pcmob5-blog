@@ -57,37 +57,6 @@ export default function AccountScreen({ navigation }) {
     return removeListener;
   }, []);
 
-
-  //Need to work on edit profile pic
-/*
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
-        }
-      }
-    })();
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setProfileImage(result.uri);
-    }
-  };
-
-  function updateProfile() {
-    
-  }
-*/
   function signOut() {
     AsyncStorage.removeItem("token");
     AsyncStorage.getItem("token")

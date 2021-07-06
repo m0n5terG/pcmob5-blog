@@ -24,7 +24,7 @@ export default function SignUpScreen({ navigation }) {
   const [refresh, setRefresh] = useState(false);
   const [error, setError] = useState(false);
 
-  async function signup () {
+  async function signup() {
     console.log("---- Signing Up ----");
     Keyboard.dismiss();
 
